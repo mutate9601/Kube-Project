@@ -5,11 +5,15 @@ agent:
     type: e1-standard-2
     os_image: ubuntu2004
 blocks:
-  - name: 'Block #1'
+  - name: Deploy
     task:
       jobs:
-        - name: 'Jobs #1'
-          commands: []
+        - name: Deploy to production
+          commands:
+            - echo "deploying using key $API_KEY"
+      env_vars:
+        - name: API_KEY
+          value: '123'
   - name: Tests
     task:
       prologue:
@@ -22,3 +26,8 @@ blocks:
         - name: Integration test
           commands:
             - echo 'running integration tests'
+promotions:
+  - name: Production deployment
+    pipeline_file: pipeline_2.yml
+    auto_promote:
+      when: branch = 'main' AND result ='passed'
